@@ -1,0 +1,12 @@
+.git
+.gemini
+node_modules
+*.log
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+*.pdf
+scratch/
+
