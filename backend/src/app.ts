@@ -25,7 +25,7 @@ app.use('/api', apiRoutes);
 app.use('/', apiRoutes);
 
 // Page d'accueil racine API
-app.get('/', (req: Request, res: Response) => {
+app.get(['/', '/api'], (req: Request, res: Response) => {
   res.json({
     name: 'Boostify API',
     description: "API Mobile & Web pour les services de croissance d'audience en Afrique de l'Ouest",

@@ -2,7 +2,7 @@ import { reactive } from 'vue';
 import type { ServiceItem, OrderItem, TransactionItem, SocialNetwork, AppTab, PolicyArticle, CoreRule } from '../types/index.js';
 import { supabase } from './supabase.js';
 
-export const API_BASE_URL = 'http://localhost:4000/api';
+export const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || '/api';
 
 // Services initiaux (grille tarifaire officielle du cahier des charges avec Vues TikTok)
 export const INITIAL_SERVICES: ServiceItem[] = [
