@@ -227,6 +227,14 @@ function scrollToArticle(index: number) {
   gap: 10px;
 }
 
+@media (min-width: 640px) {
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
 .rule-box {
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-color);

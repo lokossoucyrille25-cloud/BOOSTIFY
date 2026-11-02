@@ -93,12 +93,24 @@ function closePolicy() {
   padding-bottom: calc(90px + env(safe-area-inset-bottom));
 }
 
+@media (min-width: 768px) {
+  .app-layout {
+    padding-bottom: 40px;
+  }
+}
+
 .main-content {
   width: 100%;
-  max-width: 540px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 16px;
   flex: 1;
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    padding: 28px 32px;
+  }
 }
 
 /* Toast popup */

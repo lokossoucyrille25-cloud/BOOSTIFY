@@ -79,140 +79,147 @@ async function handleDeposit() {
       <p class="view-subtitle">Recharge instantanée par Mobile Money</p>
     </div>
 
-    <!-- Carte de solde luxe -->
-    <div class="wallet-balance-card">
-      <div class="balance-card-glow"></div>
-      <div class="balance-meta">
-        <span class="balance-label">SOLDE DISPONIBLE</span>
-        <span class="balance-user">{{ state.user.name || 'Mon Compte' }}</span>
-      </div>
-      <div class="balance-display">
-        <span class="balance-number">{{ state.wallet.balance.toLocaleString() }}</span>
-        <span class="balance-currency">FCFA</span>
-      </div>
-      <div class="balance-footer">
-        <div class="security-chip">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
-          </svg>
-          Sécurisé par Chariow
+    <div class="wallet-layout">
+      <!-- Colonne Gauche : Solde & Recharge -->
+      <div class="wallet-left-col">
+        <!-- Carte de solde luxe -->
+        <div class="wallet-balance-card">
+          <div class="balance-card-glow"></div>
+          <div class="balance-meta">
+            <span class="balance-label">SOLDE DISPONIBLE</span>
+            <span class="balance-user">{{ state.user.name || 'Mon Compte' }}</span>
+          </div>
+          <div class="balance-display">
+            <span class="balance-number">{{ state.wallet.balance.toLocaleString() }}</span>
+            <span class="balance-currency">FCFA</span>
+          </div>
+          <div class="balance-footer">
+            <div class="security-chip">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+              </svg>
+              Sécurisé par Chariow
+            </div>
+            <span class="balance-phone">{{ state.user.phone || 'Non renseigné' }}</span>
+          </div>
         </div>
-        <span class="balance-phone">{{ state.user.phone || 'Non renseigné' }}</span>
-      </div>
-    </div>
 
-    <!-- Section Recharge -->
-    <div class="recharge-section">
-      <h3 class="section-title">Recharger mon compte</h3>
+        <!-- Section Recharge -->
+        <div class="recharge-section">
+          <h3 class="section-title">Recharger mon compte</h3>
 
-      <!-- Paliers prédéfinis du cahier des charges -->
-      <div class="preset-amounts-grid">
-        <button
-          v-for="pack in presetAmounts"
-          :key="pack.amount"
-          class="amount-card"
-          :class="{ active: selectedAmount === pack.amount && !customAmount }"
-          @click="selectPreset(pack.amount)"
-        >
-          <span v-if="pack.popular" class="popular-tag">Le plus choisi</span>
-          <span class="amount-val">{{ pack.label }}</span>
-        </button>
-      </div>
+          <!-- Paliers prédéfinis du cahier des charges -->
+          <div class="preset-amounts-grid">
+            <button
+              v-for="pack in presetAmounts"
+              :key="pack.amount"
+              class="amount-card"
+              :class="{ active: selectedAmount === pack.amount && !customAmount }"
+              @click="selectPreset(pack.amount)"
+            >
+              <span v-if="pack.popular" class="popular-tag">Le plus choisi</span>
+              <span class="amount-val">{{ pack.label }}</span>
+            </button>
+          </div>
 
-      <!-- Saisie montant libre (min 600 FCFA) -->
-      <div class="custom-amount-box">
-        <label class="input-label">Ou saisissez un montant libre (min. 600 FCFA)</label>
-        <div class="custom-input-group">
-          <input
-            v-model.number="customAmount"
-            type="number"
-            min="600"
-            step="100"
-            placeholder="Ex: 2 500"
-            class="input-free-amount"
-            @input="handleCustomAmountChange"
-          />
-          <span class="input-suffix">FCFA</span>
-        </div>
-      </div>
+          <!-- Saisie montant libre (min 600 FCFA) -->
+          <div class="custom-amount-box">
+            <label class="input-label">Ou saisissez un montant libre (min. 600 FCFA)</label>
+            <div class="custom-input-group">
+              <input
+                v-model.number="customAmount"
+                type="number"
+                min="600"
+                step="100"
+                placeholder="Ex: 2 500"
+                class="input-free-amount"
+                @input="handleCustomAmountChange"
+              />
+              <span class="input-suffix">FCFA</span>
+            </div>
+          </div>
 
-      <!-- Choix de l'opérateur Mobile Money -->
-      <div class="operator-box">
-        <label class="input-label">1. Moyen de paiement (Réseau)</label>
-        <div class="operator-list">
-          <label
-            v-for="op in operators"
-            :key="op.id"
-            class="operator-item"
-            :class="{ active: selectedOperator === op.id }"
+          <!-- Choix de l'opérateur Mobile Money -->
+          <div class="operator-box">
+            <label class="input-label">1. Moyen de paiement (Réseau)</label>
+            <div class="operator-list">
+              <label
+                v-for="op in operators"
+                :key="op.id"
+                class="operator-item"
+                :class="{ active: selectedOperator === op.id }"
+              >
+                <input
+                  type="radio"
+                  v-model="selectedOperator"
+                  :value="op.id"
+                  class="radio-op"
+                />
+                <span class="op-icon">{{ op.icon }}</span>
+                <span class="op-name">{{ op.name }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Saisie / Confirmation du numéro Mobile Money -->
+          <div class="phone-confirm-box" v-if="selectedOperator !== 'card'">
+            <label class="input-label">2. Numéro Mobile Money pour la validation</label>
+            <div class="phone-input-group">
+              <span class="phone-prefix-icon">📱</span>
+              <input
+                v-model="rechargePhone"
+                type="tel"
+                placeholder="Ex: 0159299198 ou +229 0159299198"
+                class="input-phone-recharge"
+              />
+            </div>
+            <p class="phone-helper-text">
+              ⚡ Vous atterrirez directement sur l'écran demandant de valider le transfert ou votre code de transaction.
+            </p>
+          </div>
+
+          <!-- Bouton de validation de recharge -->
+          <button
+            class="btn-confirm-recharge"
+            :disabled="isRecharging"
+            @click="handleDeposit"
           >
-            <input
-              type="radio"
-              v-model="selectedOperator"
-              :value="op.id"
-              class="radio-op"
-            />
-            <span class="op-icon">{{ op.icon }}</span>
-            <span class="op-name">{{ op.name }}</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Saisie / Confirmation du numéro Mobile Money -->
-      <div class="phone-confirm-box" v-if="selectedOperator !== 'card'">
-        <label class="input-label">2. Numéro Mobile Money pour la validation</label>
-        <div class="phone-input-group">
-          <span class="phone-prefix-icon">📱</span>
-          <input
-            v-model="rechargePhone"
-            type="tel"
-            placeholder="Ex: 0159299198 ou +229 0159299198"
-            class="input-phone-recharge"
-          />
-        </div>
-        <p class="phone-helper-text">
-          ⚡ Vous atterrirez directement sur l'écran demandant de valider le transfert ou votre code de transaction.
-        </p>
-      </div>
-
-      <!-- Bouton de validation de recharge -->
-      <button
-        class="btn-confirm-recharge"
-        :disabled="isRecharging"
-        @click="handleDeposit"
-      >
-        <span v-if="!isRecharging">
-          Recharger {{ (customAmount || selectedAmount).toLocaleString() }} FCFA
-        </span>
-        <span v-else>Connexion à l'opérateur Mobile Money...</span>
-      </button>
-    </div>
-
-    <!-- Historique des transactions -->
-    <div class="transactions-section">
-      <h3 class="section-title">Historique des transactions</h3>
-      <div v-if="state.transactions.length > 0" class="transactions-list">
-        <div
-          v-for="tx in state.transactions"
-          :key="tx.id"
-          class="transaction-row"
-        >
-          <div class="tx-icon" :class="tx.type">
-            {{ tx.type === 'deposit' ? '↓' : '↑' }}
-          </div>
-          <div class="tx-details">
-            <span class="tx-title">
-              {{ tx.type === 'deposit' ? 'Recharge Mobile Money' : 'Paiement Commande' }}
+            <span v-if="!isRecharging">
+              Recharger {{ (customAmount || selectedAmount).toLocaleString() }} FCFA
             </span>
-            <span class="tx-ref">{{ tx.reference }} • {{ tx.created_at }}</span>
-          </div>
-          <div class="tx-amount" :class="tx.type">
-            {{ tx.type === 'deposit' ? '+' : '-' }}{{ tx.amount.toLocaleString() }} <small>FCFA</small>
-          </div>
+            <span v-else>Connexion à l'opérateur Mobile Money...</span>
+          </button>
         </div>
       </div>
-      <div v-else class="transactions-empty">
-        <p>Aucune transaction enregistrée pour le moment. Vos recharges et commandes s'afficheront ici.</p>
+
+      <!-- Colonne Droite : Historique des transactions -->
+      <div class="wallet-right-col">
+        <div class="transactions-section">
+          <h3 class="section-title">Historique des transactions</h3>
+          <div v-if="state.transactions.length > 0" class="transactions-list">
+            <div
+              v-for="tx in state.transactions"
+              :key="tx.id"
+              class="transaction-row"
+            >
+              <div class="tx-icon" :class="tx.type">
+                {{ tx.type === 'deposit' ? '↓' : '↑' }}
+              </div>
+              <div class="tx-details">
+                <span class="tx-title">
+                  {{ tx.type === 'deposit' ? 'Recharge Mobile Money' : 'Paiement Commande' }}
+                </span>
+                <span class="tx-ref">{{ tx.reference }} • {{ tx.created_at }}</span>
+              </div>
+              <div class="tx-amount" :class="tx.type">
+                {{ tx.type === 'deposit' ? '+' : '-' }}{{ tx.amount.toLocaleString() }} <small>FCFA</small>
+              </div>
+            </div>
+          </div>
+          <div v-else class="transactions-empty">
+            <p>Aucune transaction enregistrée pour le moment. Vos recharges et commandes s'afficheront ici.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -223,6 +230,32 @@ async function handleDeposit() {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.wallet-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.wallet-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 900px) {
+  .wallet-layout {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 28px;
+    align-items: flex-start;
+  }
+
+  .wallet-right-col {
+    position: sticky;
+    top: 84px;
+  }
 }
 
 .view-title {

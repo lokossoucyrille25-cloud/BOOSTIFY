@@ -162,141 +162,148 @@ async function handleOrderSubmit() {
       <p class="view-subtitle">Parcours express en 4 étapes simples</p>
     </div>
 
-    <!-- Étape 1 : Réseau & Service -->
-    <div class="step-card">
-      <div class="step-badge">1</div>
-      <div class="step-content">
-        <label class="step-label">Réseau & Type de service</label>
-        
-        <!-- Sélecteur rapide réseau -->
-        <div class="mini-network-pills">
+    <div class="order-layout">
+      <!-- Colonne des étapes de configuration -->
+      <div class="order-steps-column">
+        <!-- Étape 1 : Réseau & Service -->
+        <div class="step-card">
+          <div class="step-badge">1</div>
+          <div class="step-content">
+            <label class="step-label">Réseau & Type de service</label>
+            
+            <!-- Sélecteur rapide réseau -->
+            <div class="mini-network-pills">
+              <button
+                v-for="net in (['tiktok', 'instagram', 'facebook', 'discord'] as SocialNetwork[])"
+                :key="net"
+                class="mini-pill"
+                :class="{ active: selectedNetwork === net }"
+                @click="selectedNetwork = net"
+              >
+                {{ net.toUpperCase() }}
+              </button>
+            </div>
+
+            <!-- Dropdown de choix du service -->
+            <div class="select-wrapper">
+              <select v-model="selectedServiceId" class="custom-select">
+                <option
+                  v-for="serv in availableServices"
+                  :key="serv.id"
+                  :value="serv.id"
+                >
+                  {{ serv.name }} ({{ serv.price_per_1000.toLocaleString() }} FCFA / 1000)
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Étape 2 : Adresse publique de la cible -->
+        <div class="step-card">
+          <div class="step-badge">2</div>
+          <div class="step-content">
+            <div class="step-label-row">
+              <label class="step-label">Lien public de la cible</label>
+              <button class="btn-paste" @click="pasteFromClipboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+                Coller
+              </button>
+            </div>
+
+            <div class="input-wrapper" :class="{ 'has-error': urlError }">
+              <input
+                v-model="targetUrl"
+                type="url"
+                class="custom-input"
+                :placeholder="urlPlaceholder"
+                @blur="validateUrl"
+              />
+            </div>
+            <span v-if="urlError" class="error-text">{{ urlError }}</span>
+            <span class="helper-text">⚠️ Ne donnez jamais votre mot de passe. Seul le lien public est requis.</span>
+          </div>
+        </div>
+
+        <!-- Étape 3 : Quantité & Calcul temps réel -->
+        <div class="step-card" v-if="currentService">
+          <div class="step-badge">3</div>
+          <div class="step-content">
+            <div class="step-label-row">
+              <label class="step-label">Quantité demandée</label>
+              <span class="quantity-counter">{{ quantity.toLocaleString() }} unités</span>
+            </div>
+
+            <!-- Slider de quantité -->
+            <input
+              v-model.number="quantity"
+              type="range"
+              class="custom-range"
+              :min="currentService.min_quantity"
+              :max="currentService.max_quantity"
+              :step="currentService.min_quantity >= 500 ? 100 : 50"
+            />
+
+            <!-- Raccourcis de quantité rapide -->
+            <div class="preset-chips">
+              <button class="chip" @click="quantity = currentService.min_quantity">Min ({{ currentService.min_quantity }})</button>
+              <button class="chip" @click="quantity = 500">+500</button>
+              <button class="chip" @click="quantity = 1000">+1 000</button>
+              <button class="chip" @click="quantity = 5000">+5 000</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne Récapitulatif et Validation (Sticky sur Desktop) -->
+      <div class="order-summary-column" v-if="currentService">
+        <div class="summary-card">
+          <div class="summary-row">
+            <span class="summary-label">Service sélectionné</span>
+            <span class="summary-val">{{ currentService.name }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Quantité</span>
+            <span class="summary-val">{{ quantity.toLocaleString() }}</span>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-total-row">
+            <div class="total-label-box">
+              <span class="total-title">Total à payer</span>
+              <span class="total-subtitle">Débité de votre solde</span>
+            </div>
+            <div class="total-price">
+              {{ computedPrice.toLocaleString() }} <small>FCFA</small>
+            </div>
+          </div>
+
+          <!-- Alerte solde insuffisant -->
+          <div v-if="!hasEnoughBalance" class="balance-warning">
+            <div class="warning-icon">⚠️</div>
+            <div class="warning-text">
+              <strong>Solde insuffisant</strong>
+              <span>Il vous manque {{ missingAmount.toLocaleString() }} FCFA. Rechargez pour continuer.</span>
+            </div>
+            <button class="btn-warning-recharge" @click="$emit('go-wallet')">
+              Recharger
+            </button>
+          </div>
+
+          <!-- Bouton d'action principal -->
           <button
-            v-for="net in (['tiktok', 'instagram', 'facebook', 'discord'] as SocialNetwork[])"
-            :key="net"
-            class="mini-pill"
-            :class="{ active: selectedNetwork === net }"
-            @click="selectedNetwork = net"
+            v-if="hasEnoughBalance"
+            class="btn-submit-order"
+            :disabled="isSubmitting"
+            @click="handleOrderSubmit"
           >
-            {{ net.toUpperCase() }}
+            <span v-if="!isSubmitting">Confirmer et Commander ({{ computedPrice.toLocaleString() }} FCFA)</span>
+            <span v-else>Traitement de votre commande...</span>
           </button>
         </div>
-
-        <!-- Dropdown de choix du service -->
-        <div class="select-wrapper">
-          <select v-model="selectedServiceId" class="custom-select">
-            <option
-              v-for="serv in availableServices"
-              :key="serv.id"
-              :value="serv.id"
-            >
-              {{ serv.name }} ({{ serv.price_per_1000.toLocaleString() }} FCFA / 1000)
-            </option>
-          </select>
-        </div>
       </div>
-    </div>
-
-    <!-- Étape 2 : Adresse publique de la cible -->
-    <div class="step-card">
-      <div class="step-badge">2</div>
-      <div class="step-content">
-        <div class="step-label-row">
-          <label class="step-label">Lien public de la cible</label>
-          <button class="btn-paste" @click="pasteFromClipboard">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-            </svg>
-            Coller
-          </button>
-        </div>
-
-        <div class="input-wrapper" :class="{ 'has-error': urlError }">
-          <input
-            v-model="targetUrl"
-            type="url"
-            class="custom-input"
-            :placeholder="urlPlaceholder"
-            @blur="validateUrl"
-          />
-        </div>
-        <span v-if="urlError" class="error-text">{{ urlError }}</span>
-        <span class="helper-text">⚠️ Ne donnez jamais votre mot de passe. Seul le lien public est requis.</span>
-      </div>
-    </div>
-
-    <!-- Étape 3 : Quantité & Calcul temps réel -->
-    <div class="step-card" v-if="currentService">
-      <div class="step-badge">3</div>
-      <div class="step-content">
-        <div class="step-label-row">
-          <label class="step-label">Quantité demandée</label>
-          <span class="quantity-counter">{{ quantity.toLocaleString() }} unités</span>
-        </div>
-
-        <!-- Slider de quantité -->
-        <input
-          v-model.number="quantity"
-          type="range"
-          class="custom-range"
-          :min="currentService.min_quantity"
-          :max="currentService.max_quantity"
-          :step="currentService.min_quantity >= 500 ? 100 : 50"
-        />
-
-        <!-- Raccourcis de quantité rapide -->
-        <div class="preset-chips">
-          <button class="chip" @click="quantity = currentService.min_quantity">Min ({{ currentService.min_quantity }})</button>
-          <button class="chip" @click="quantity = 500">+500</button>
-          <button class="chip" @click="quantity = 1000">+1 000</button>
-          <button class="chip" @click="quantity = 5000">+5 000</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Étape 4 : Récapitulatif et Validation -->
-    <div class="summary-card" v-if="currentService">
-      <div class="summary-row">
-        <span class="summary-label">Service sélectionné</span>
-        <span class="summary-val">{{ currentService.name }}</span>
-      </div>
-      <div class="summary-row">
-        <span class="summary-label">Quantité</span>
-        <span class="summary-val">{{ quantity.toLocaleString() }}</span>
-      </div>
-      <div class="summary-divider"></div>
-      <div class="summary-total-row">
-        <div class="total-label-box">
-          <span class="total-title">Total à payer</span>
-          <span class="total-subtitle">Débité de votre solde</span>
-        </div>
-        <div class="total-price">
-          {{ computedPrice.toLocaleString() }} <small>FCFA</small>
-        </div>
-      </div>
-
-      <!-- Alerte solde insuffisant -->
-      <div v-if="!hasEnoughBalance" class="balance-warning">
-        <div class="warning-icon">⚠️</div>
-        <div class="warning-text">
-          <strong>Solde insuffisant</strong>
-          <span>Il vous manque {{ missingAmount.toLocaleString() }} FCFA. Rechargez pour continuer.</span>
-        </div>
-        <button class="btn-warning-recharge" @click="$emit('go-wallet')">
-          Recharger
-        </button>
-      </div>
-
-      <!-- Bouton d'action principal -->
-      <button
-        v-if="hasEnoughBalance"
-        class="btn-submit-order"
-        :disabled="isSubmitting"
-        @click="handleOrderSubmit"
-      >
-        <span v-if="!isSubmitting">Confirmer et Commander ({{ computedPrice.toLocaleString() }} FCFA)</span>
-        <span v-else>Traitement de votre commande...</span>
-      </button>
     </div>
   </div>
 </template>
@@ -306,6 +313,32 @@ async function handleOrderSubmit() {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.order-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order-steps-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 900px) {
+  .order-layout {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 28px;
+    align-items: flex-start;
+  }
+
+  .order-summary-column {
+    position: sticky;
+    top: 84px;
+  }
 }
 
 .order-header {

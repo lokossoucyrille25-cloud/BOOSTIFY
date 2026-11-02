@@ -70,6 +70,14 @@ function selectNetwork(net: SocialNetwork) {
   min-width: 100%;
 }
 
+@media (min-width: 768px) {
+  .network-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+}
+
 .network-tab {
   flex: 1;
   min-width: 100px;

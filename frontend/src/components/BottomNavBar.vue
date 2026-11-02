@@ -123,6 +123,12 @@ const activeOrdersCount = computed(() => {
   padding: 6px 12px calc(6px + env(safe-area-inset-bottom));
 }
 
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none !important;
+  }
+}
+
 .nav-container {
   max-width: 540px;
   margin: 0 auto;

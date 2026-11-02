@@ -373,6 +373,22 @@ function startOrderWithService(service: ServiceItem) {
   gap: 12px;
 }
 
+@media (min-width: 600px) {
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
 .service-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
@@ -477,6 +493,32 @@ function startOrderWithService(service: ServiceItem) {
   flex-direction: column;
   gap: 14px;
   margin-top: 10px;
+}
+
+@media (min-width: 768px) {
+  .trust-banner {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .visitor-welcome-card {
+    padding: 32px 36px;
+    margin-bottom: 24px;
+  }
+  .visitor-welcome-title {
+    font-size: 1.7rem;
+  }
+  .visitor-welcome-desc {
+    font-size: 0.95rem;
+  }
+  .visitor-auth-buttons {
+    max-width: 440px;
+  }
 }
 
 .trust-item {

@@ -205,6 +205,14 @@ async function repeatOrder(order: OrderItem) {
   gap: 14px;
 }
 
+@media (min-width: 768px) {
+  .orders-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
 .order-item-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);

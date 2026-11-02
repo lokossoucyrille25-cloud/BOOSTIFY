@@ -188,6 +188,16 @@ function closeIosModal() {
   padding: 12px 14px;
 }
 
+@media (min-width: 768px) {
+  .pwa-install-banner {
+    bottom: 24px;
+    right: 24px;
+    left: auto;
+    transform: none;
+    max-width: 440px;
+  }
+}
+
 .banner-body {
   display: flex;
   align-items: center;

@@ -61,8 +61,11 @@ function confirmDeleteAccount() {
       <p class="view-subtitle">Gestion de compte et assistance client 24/7</p>
     </div>
 
-    <!-- Carte Profil -->
-    <div class="profile-card">
+    <div class="profile-layout">
+      <!-- Colonne Gauche : Profil, PWA et Support -->
+      <div class="profile-left-col">
+        <!-- Carte Profil -->
+        <div class="profile-card">
       <div class="avatar-circle">
         {{ (state.user.name || 'BF').slice(0, 2).toUpperCase() }}
       </div>
@@ -104,6 +107,19 @@ function confirmDeleteAccount() {
       </button>
     </div>
 
+    <!-- Actions du Compte -->
+    <div class="account-actions">
+      <button class="btn-logout" @click="handleLogout">
+        Se déconnecter
+      </button>
+      <button class="btn-delete-account" @click="confirmDeleteAccount">
+        Demander la suppression de mon compte
+      </button>
+    </div>
+  </div>
+
+  <!-- Colonne Droite : FAQ et Mentions Légales -->
+  <div class="profile-right-col">
     <!-- Centre d'aide (FAQ) -->
     <div class="faq-section">
       <h3 class="section-title">Questions fréquentes (FAQ)</h3>
@@ -142,15 +158,7 @@ function confirmDeleteAccount() {
         Consulter les 7 Articles
       </button>
     </div>
-
-    <!-- Actions du Compte -->
-    <div class="account-actions">
-      <button class="btn-logout" @click="handleLogout">
-        Se déconnecter
-      </button>
-      <button class="btn-delete-account" @click="confirmDeleteAccount">
-        Demander la suppression de mon compte
-      </button>
+      </div>
     </div>
   </div>
 </template>
@@ -160,6 +168,38 @@ function confirmDeleteAccount() {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.profile-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.profile-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.profile-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+@media (min-width: 860px) {
+  .profile-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: 28px;
+    align-items: flex-start;
+  }
+
+  .profile-left-col {
+    position: sticky;
+    top: 84px;
+  }
 }
 
 .view-title {
