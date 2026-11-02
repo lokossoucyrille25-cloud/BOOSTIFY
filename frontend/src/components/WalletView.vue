@@ -52,9 +52,14 @@ async function handleDeposit() {
     return;
   }
 
+  if (selectedOperator.value !== 'card' && (!rechargePhone.value || rechargePhone.value.trim().length < 8)) {
+    showToast('Veuillez renseigner un numéro Mobile Money valide pour recevoir la confirmation.', 'error');
+    return;
+  }
+
   isRecharging.value = true;
   try {
-    await depositFunds(amountToCharge, selectedOperator.value, rechargePhone.value);
+    await depositFunds(amountToCharge, selectedOperator.value, rechargePhone.value.trim());
   } finally {
     isRecharging.value = false;
   }
@@ -174,7 +179,7 @@ async function handleDeposit() {
               />
             </div>
             <p class="phone-helper-text">
-              ⚡ Vous atterrirez directement sur l'écran demandant de valider le transfert ou votre code de transaction.
+              ⚡ Chariow envoie directement le message de confirmation avec le montant choisi sur ce numéro, et vous atterrissez directement sur la page de confirmation.
             </p>
           </div>
 
@@ -187,7 +192,7 @@ async function handleDeposit() {
             <span v-if="!isRecharging">
               Recharger {{ (customAmount || selectedAmount).toLocaleString() }} FCFA
             </span>
-            <span v-else>Connexion à l'opérateur Mobile Money...</span>
+            <span v-else>Envoi de la confirmation Mobile Money...</span>
           </button>
         </div>
       </div>

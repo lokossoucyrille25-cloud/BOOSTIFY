@@ -735,12 +735,12 @@ export async function depositFunds(
       return { success: false, message: resData.error };
     }
 
-    // Redirection automatique vers la page de paiement sécurisée Mobile Money Chariow
+    // Redirection automatique vers la page de confirmation Chariow
     if (resData.checkout_url) {
-      showToast('Redirection vers la passerelle de paiement Mobile Money...', 'info');
+      showToast('Demande envoyée sur votre téléphone ! Redirection...', 'success');
       setTimeout(() => {
         window.location.href = resData.checkout_url;
-      }, 800);
+      }, 400);
       return { success: true, message: 'Redirection vers Chariow.' };
     }
 

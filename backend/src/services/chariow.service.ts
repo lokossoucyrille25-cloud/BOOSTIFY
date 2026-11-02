@@ -21,14 +21,16 @@ export class ChariowService {
 
   /**
    * Déclenche automatiquement l'opérateur Mobile Money (MTN, Moov, Celtiis...) auprès de la passerelle Orqex
-   * afin que le client atterrisse directement sur l'écran d'approbation USSD / numéro de transaction.
+   * afin que le client reçoive le prompt USSD / SMS sur son téléphone et atterrisse directement
+   * sur l'écran de confirmation d'approbation Orqex.
    */
   static async triggerOrqexDirectPay(params: {
     checkoutUrl: string;
     operatorCode: string;
     phone: string;
     countryCode: string;
-  }): Promise<void> {
+    currency?: string;
+  }): Promise<{ success: boolean; nextAction?: any; error?: string }> {
     try {
       const publicId = params.checkoutUrl.split('?')[0].split('/').pop();
       const orqexPk = ENV.CHARIOW_PUBLIC_KEY && !ENV.CHARIOW_PUBLIC_KEY.startsWith('pk_test_boostify')
@@ -36,14 +38,15 @@ export class ChariowService {
         : 'pk_live_1z94njny_n8nfu4i2rfnm4q9k49i8fc6nt2yx29y3';
 
       if (publicId && params.operatorCode && !params.operatorCode.includes('card')) {
-        console.log(`🚀 [Orqex Direct Pay] Déclenchement de ${params.operatorCode} pour ${params.phone} (Session: ${publicId})`);
-        await axios.post(
+        console.log(`🚀 [Orqex Direct Pay] Déclenchement de ${params.operatorCode} pour ${params.phone} (${params.countryCode}) - Session: ${publicId}`);
+        const payRes = await axios.post(
           `https://api.orqex.com/checkout/${publicId}/pay`,
           {
             method_code: params.operatorCode,
             country: params.countryCode,
+            currency: params.currency || 'XOF',
             phone: {
-              number: params.phone || '0159299198',
+              number: params.phone,
               country: params.countryCode
             }
           },
@@ -55,14 +58,18 @@ export class ChariowService {
               'Origin': 'https://checkout.orqex.com',
               'Referer': params.checkoutUrl
             },
-            timeout: 5000
+            timeout: 7000
           }
-        ).catch(payErr => {
-          console.warn('ℹ️ [Orqex Direct Pay Note]:', payErr.response?.data?.message || payErr.message);
-        });
+        );
+
+        const nextAction = payRes.data?.data?.attempt?.next_action;
+        console.log(`✅ [Orqex Direct Pay] Demande USSD envoyée sur ${params.phone}:`, nextAction || 'En attente de validation');
+        return { success: true, nextAction };
       }
+      return { success: false };
     } catch (err: any) {
-      console.warn('ℹ️ [Orqex Direct Pay Erreur gérée]:', err.message);
+      console.warn('ℹ️ [Orqex Direct Pay Note]:', err.response?.data?.message || err.message);
+      return { success: false, error: err.response?.data?.message || err.message };
     }
   }
 
@@ -158,6 +165,14 @@ export class ChariowService {
         cleanedPhone = cleanedPhone.replace(/^\+?228/, '');
       }
 
+      // Déduction du pays d'après l'opérateur si l'utilisateur n'a pas mis l'indicatif
+      if (paymentMethod) {
+        const pm = paymentMethod.toLowerCase();
+        if ((pm.includes('orange') || pm.includes('wave')) && countryCode === 'BJ' && !userPhone?.includes('229')) {
+          countryCode = 'CI';
+        }
+      }
+
       // Format béninois à 10 chiffres (ajoute 01 si ancien format à 8 chiffres)
       if (countryCode === 'BJ' && cleanedPhone.length === 8) {
         cleanedPhone = '01' + cleanedPhone;
@@ -247,14 +262,15 @@ export class ChariowService {
         }
       }
 
-      // 3. Déclenchement automatique de l'opérateur Mobile Money pour atterrir DIRECTEMENT
-      // sur l'écran demandant le code/numéro de transaction
+      // 3. Déclenchement automatique de l'opérateur Mobile Money pour envoyer le push USSD
+      // et faire atterrir le client DIRECTEMENT sur l'écran "Confirm on your phone"
       if (checkoutUrl) {
         await ChariowService.triggerOrqexDirectPay({
           checkoutUrl,
           operatorCode: orqexMethod,
           phone: cleanedPhone,
-          countryCode
+          countryCode,
+          currency: 'XOF'
         });
 
         return {
