@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { state } from './services/api';
+import { initPwa } from './services/pwa';
 import NavbarHeader from './components/NavbarHeader.vue';
 import HomeView from './components/HomeView.vue';
 import OrderView from './components/OrderView.vue';
@@ -10,9 +11,14 @@ import ProfileView from './components/ProfileView.vue';
 import PolicyView from './components/PolicyView.vue';
 import AuthView from './components/AuthView.vue';
 import BottomNavBar from './components/BottomNavBar.vue';
+import PwaInstallPrompt from './components/PwaInstallPrompt.vue';
 import type { AppTab } from './types/index';
 
 const previousTab = ref<AppTab>('home');
+
+onMounted(() => {
+  initPwa();
+});
 
 function openPolicy() {
   previousTab.value = state.activeTab;
@@ -65,6 +71,9 @@ function closePolicy() {
     <!-- Navigation Inférieure (masquée sur auth et policy) -->
     <BottomNavBar v-if="state.activeTab !== 'policy' && state.activeTab !== 'auth'" />
 
+    <!-- Invite d'Installation PWA & Statut Réseau -->
+    <PwaInstallPrompt />
+
     <!-- Notifications Toast Globales -->
     <Transition name="slide-up">
       <div v-if="state.toast.show" class="toast-popup" :class="state.toast.type">
@@ -81,7 +90,7 @@ function closePolicy() {
   display: flex;
   flex-direction: column;
   background-color: var(--bg-app);
-  padding-bottom: 90px;
+  padding-bottom: calc(90px + env(safe-area-inset-bottom));
 }
 
 .main-content {

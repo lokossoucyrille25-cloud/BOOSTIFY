@@ -58,7 +58,7 @@ defineEmits<{
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-color);
-  padding: 12px 16px;
+  padding: calc(12px + env(safe-area-inset-top)) 16px 12px 16px;
 }
 
 .header-container {

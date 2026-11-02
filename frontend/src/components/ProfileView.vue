@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { state, showToast, logout } from '../services/api';
+import { isStandalone, installPwa } from '../services/pwa';
 
 const activeFaq = ref<number | null>(0);
 
@@ -70,6 +71,22 @@ function confirmDeleteAccount() {
         <span class="user-phone">{{ state.user.phone || 'Non renseigné' }}</span>
         <span class="user-email">{{ state.user.email }}</span>
       </div>
+    </div>
+
+    <!-- Carte PWA Application Mobile -->
+    <div v-if="!isStandalone" class="pwa-profile-card">
+      <div class="pwa-profile-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+      </div>
+      <div class="pwa-profile-info">
+        <h4>Application Mobile & Web</h4>
+        <p>Installez Boostify sur votre écran d'accueil pour un accès ultra-rapide et plein écran.</p>
+      </div>
+      <button class="btn-install-profile" @click="installPwa">
+        Installer l'App
+      </button>
     </div>
 
     <!-- Assistance WhatsApp Directe -->
@@ -200,6 +217,70 @@ function confirmDeleteAccount() {
 .user-email {
   font-size: 0.8rem;
   color: var(--text-muted);
+}
+
+/* Carte PWA Profil */
+.pwa-profile-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 78, 59, 0.25));
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pwa-profile-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+}
+
+.pwa-profile-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.pwa-profile-info h4 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.pwa-profile-info p {
+  font-size: 0.8rem;
+  color: #d1fae5;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.btn-install-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #ffffff;
+  border: none;
+  font-weight: 800;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  min-height: 48px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+}
+
+.btn-install-profile:hover, .btn-install-profile:active {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
 }
 
 /* Support WhatsApp */

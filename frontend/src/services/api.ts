@@ -756,6 +756,17 @@ export async function depositFunds(
  * Initialisation au démarrage de l'application
  */
 export async function initAuth(): Promise<void> {
+  // 0. Support des raccourcis PWA et navigation par URL (?tab=order, ?tab=wallet...)
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab') as AppTab | null;
+    if (tabParam && ['home', 'order', 'orders', 'wallet', 'profile', 'policy', 'auth'].includes(tabParam)) {
+      state.activeTab = tabParam;
+    }
+  } catch (e) {
+    console.warn('Navigation URL non supportée:', e);
+  }
+
   // 1. Charger les services en direct
   await loadServices();
 

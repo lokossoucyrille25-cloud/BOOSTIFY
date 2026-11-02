@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <!-- Background rounded squircle -->
+  <rect width="512" height="512" rx="128" fill="url(#bg)"/>
+  <rect width="504" height="504" x="4" y="4" rx="124" fill="none" stroke="#10b981" stroke-opacity="0.3" stroke-width="4"/>
+  <!-- Lightning Bolt Boost Icon -->
+  <path d="M280 48L128 272h120l-32 192 168-240H264l48-176z" fill="url(#bolt)" filter="url(#glow)"/>
+  <path d="M280 48L128 272h120l-32 192 168-240H264l48-176z" fill="#ffffff" fill-opacity="0.25"/>
+</svg>
+

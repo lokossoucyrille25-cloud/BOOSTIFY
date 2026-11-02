@@ -1,0 +1,66 @@
+{
+  "id": "/",
+  "name": "Boostify - Croissance Réseaux Sociaux & Mobile Money",
+  "short_name": "Boostify",
+  "description": "Boostez vos réseaux sociaux en Afrique de l'Ouest (TikTok, Instagram, Facebook, YouTube, Telegram) avec paiement Mobile Money en FCFA.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#090d16",
+  "theme_color": "#059669",
+  "lang": "fr-FR",
+  "dir": "ltr",
+  "categories": ["business", "social", "shopping", "utilities"],
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Commander un Boost",
+      "short_name": "Commander",
+      "url": "/?tab=order",
+      "description": "Lancer une nouvelle commande de visibilité",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mon Portefeuille",
+      "short_name": "Recharger",
+      "url": "/?tab=wallet",
+      "description": "Recharger mon solde par Mobile Money en FCFA",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mes Commandes",
+      "short_name": "Commandes",
+      "url": "/?tab=orders",
+      "description": "Suivre l'état d'avancement de vos commandes",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
+
