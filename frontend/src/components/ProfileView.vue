@@ -33,7 +33,7 @@ function toggleFaq(index: number) {
 }
 
 function openWhatsAppSupport() {
-  window.open('https://wa.me/22997000000?text=Bonjour%20Boostify%2C%20j%27ai%20besoin%20d%27assistance', '_blank');
+  window.open('https://wa.me/2290159299198?text=Bonjour%20Boostify%2C%20j%27ai%20besoin%20d%27assistance', '_blank');
 }
 
 function confirmDeleteAccount() {
