@@ -1,5 +1,5 @@
-// Boostify PWA Service Worker - v1.0.0
-const CACHE_NAME = 'boostify-cache-v1';
+// Boostify PWA Service Worker - v2.0.0
+const CACHE_NAME = 'boostify-cache-v2';
 
 // Fichiers critiques essentiels hors-ligne
 const PRECACHE_ASSETS = [
@@ -7,6 +7,7 @@ const PRECACHE_ASSETS = [
   '/index.html',
   '/manifest.webmanifest',
   '/icon.svg',
+  '/favicon.svg',
   '/pwa-192x192.png',
   '/pwa-512x512.png',
   '/apple-touch-icon.png'

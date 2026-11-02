@@ -1,25 +1,103 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#090d16"/>
-      <stop offset="50%" stop-color="#064e3b"/>
-      <stop offset="100%" stop-color="#022c22"/>
+    <!-- Background Deep Space Gradient -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c121e"/>
+      <stop offset="40%" stop-color="#070a12"/>
+      <stop offset="100%" stop-color="#030509"/>
     </linearGradient>
-    <linearGradient id="bolt" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#34d399"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#059669"/>
+
+    <!-- Outer Rim Metallic Gradient -->
+    <linearGradient id="rim-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.9"/>
+      <stop offset="35%" stop-color="#10b981" stop-opacity="0.4"/>
+      <stop offset="70%" stop-color="#06b6d4" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#022c22" stop-opacity="0.6"/>
     </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="16" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+
+    <!-- Core Brand Gradient (Emerald to Cyan to Mint) -->
+    <linearGradient id="brand-grad" x1="15%" y1="10%" x2="90%" y2="95%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="25%" stop-color="#10b981"/>
+      <stop offset="70%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+
+    <!-- Vibrant Lightning Core Accent -->
+    <linearGradient id="bolt-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0fdf4"/>
+      <stop offset="30%" stop-color="#6ee7b7"/>
+      <stop offset="70%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+
+    <!-- Top Gloss Highlight -->
+    <linearGradient id="gloss-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Ambient Center Radial Glow -->
+    <radialGradient id="radial-glow" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.32"/>
+      <stop offset="50%" stop-color="#06b6d4" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#090d16" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Drop Glow Filter -->
+    <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.06   0 0 0 0 0.72   0 0 0 0 0.5   0 0 0 0.5 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Subtle Bevel Shadow -->
+    <filter id="soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.65"/>
     </filter>
   </defs>
-  <!-- Background rounded squircle -->
-  <rect width="512" height="512" rx="128" fill="url(#bg)"/>
-  <rect width="504" height="504" x="4" y="4" rx="124" fill="none" stroke="#10b981" stroke-opacity="0.3" stroke-width="4"/>
-  <!-- Lightning Bolt Boost Icon -->
-  <path d="M280 48L128 272h120l-32 192 168-240H264l48-176z" fill="url(#bolt)" filter="url(#glow)"/>
-  <path d="M280 48L128 272h120l-32 192 168-240H264l48-176z" fill="#ffffff" fill-opacity="0.25"/>
-</svg>
 
+  <!-- 1. Squircle Background Canvas -->
+  <rect width="512" height="512" rx="120" fill="url(#bg-grad)"/>
+
+  <!-- 2. Ambient Energy Glow -->
+  <circle cx="256" cy="248" r="190" fill="url(#radial-glow)"/>
+
+  <!-- 3. Sleek Outer Border Rim -->
+  <rect width="504" height="504" x="4" y="4" rx="116" fill="none" stroke="url(#rim-grad)" stroke-width="3"/>
+
+  <!-- 4. Boost Energy Particles / Accents (Top Right Speed Streaks) -->
+  <circle cx="392" cy="112" r="5" fill="#34d399" opacity="0.8"/>
+  <circle cx="418" cy="136" r="3.5" fill="#6ee7b7" opacity="0.6"/>
+  <circle cx="372" cy="92" r="2.5" fill="#a7f3d0" opacity="0.5"/>
+
+  <!-- 5. Emblem: The Boostify "B" Monogram + Rocket Boost Surge -->
+  <g filter="url(#soft-shadow)">
+    <!-- Main Stylized Monogram "B" Body -->
+    <g filter="url(#neon-glow)">
+      <!-- Left Booster Stem / Power Pillar -->
+      <path d="M124 120 C124 104, 137 92, 154 92 L172 92 C189 92, 202 104, 202 120 L202 392 C202 408, 189 420, 172 420 L154 420 C137 420, 124 408, 124 392 Z" fill="url(#brand-grad)"/>
+      <!-- Stem Top Gloss Accent -->
+      <path d="M124 120 C124 104, 137 92, 154 92 L172 92 C189 92, 202 104, 202 120 L202 240 L124 240 Z" fill="url(#gloss-grad)"/>
+
+      <!-- Upper Loop: Aerodynamic Wing / Boost Arc -->
+      <path d="M192 92 L290 92 C342 92, 378 126, 378 174 C378 214, 348 244, 302 250 L192 250 Z" fill="url(#brand-grad)"/>
+      <!-- Upper Loop Inner Hole (Clean Negative Space) -->
+      <path d="M202 144 L280 144 C308 144, 326 156, 326 174 C326 192, 308 202, 280 202 L202 202 Z" fill="#070a12"/>
+
+      <!-- Lower Loop: Supersonic Forward Launch Wing -->
+      <path d="M192 242 L314 242 C366 242, 404 278, 404 330 C404 382, 362 420, 304 420 L192 420 Z" fill="url(#brand-grad)"/>
+      <!-- Lower Loop Inner Hole (Clean Negative Space) -->
+      <path d="M202 292 L296 292 C328 292, 348 306, 348 330 C348 354, 328 370, 296 370 L202 370 Z" fill="#070a12"/>
+
+      <!-- Intersecting High-Energy Lightning Arrow (Surging diagonally from bottom-left to top-right) -->
+      <path d="M268 84 L160 264 L252 264 L196 428 L356 228 L272 228 L328 84 Z" fill="url(#bolt-grad)"/>
+    </g>
+
+    <!-- Lightning Core Prismatic White Shimmer Edge -->
+    <path d="M268 84 L160 264 L252 264 L196 428 L356 228 L272 228 L328 84 Z" fill="#ffffff" fill-opacity="0.18"/>
+  </g>
+</svg>

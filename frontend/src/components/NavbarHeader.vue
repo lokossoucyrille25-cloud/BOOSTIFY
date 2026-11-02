@@ -24,7 +24,6 @@ const activeOrdersCount = computed(() => {
         </div>
         <div class="logo-text">
           <span class="logo-title">Boostify</span>
-          <span class="logo-badge">AFRIQUE</span>
         </div>
       </div>
 

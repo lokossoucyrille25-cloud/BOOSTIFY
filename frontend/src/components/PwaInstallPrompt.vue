@@ -45,7 +45,7 @@ function closeIosModal() {
         </div>
         <div class="app-info">
           <div class="app-title-row">
-            <span class="app-name">Boostify Mobile</span>
+            <span class="app-name">Boostify</span>
             <span class="pwa-badge">GRATUIT</span>
           </div>
           <p class="app-desc">Installez l'application pour un accès direct & instantané</p>
